@@ -7,13 +7,26 @@ local IS_SERVER = RunService:IsServer()
 
 local REMOTES = {
 	Events = {
+		-- Customization
 		"CustomizeEvent",
 		"UpdateColorEvent",
 		"RaceRoll",
+		-- Economy / Realm
 		"RealmRequest",
 		"Purchase",
+		-- UI / Feedback
 		"Notify",
 		"LocalSoundEvent",
+		-- Combat
+		"MeleeHit",
+		"AbilityActivation",
+		"AbilityReplicate",
+		"DamageNumber",
+		-- Character replication
+		"CharacterState",
+		"AnimationStateEvent",
+		"NPCStateEvent",
+		"SoundRequestEvent",
 	},
 	Functions = {
 		"FilterRequest",

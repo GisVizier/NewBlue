@@ -1,4 +1,8 @@
---!strict
+--[[
+    Default player data structure for VastBlue (RPG anime game).
+    Must be DataStore-serializable (no Enum, Vector3, Color3, Instances, functions).
+    Matches the DataTemplate shape used by CustomizationService, RealmService, etc.
+]]
 
 local DEFAULT_COLOR_ENTRY = {
 	Primary = { R = 255, G = 255, B = 255 },
@@ -6,7 +10,7 @@ local DEFAULT_COLOR_ENTRY = {
 	Tertiary = { R = 255, G = 255, B = 255 },
 }
 
-local DataTemplate = {
+return {
 	_version = 1,
 	Data = {
 		Currency = {
@@ -65,5 +69,3 @@ local DataTemplate = {
 		},
 	},
 }
-
-return DataTemplate
