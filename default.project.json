@@ -8,6 +8,9 @@
       "Assets": {
         "$className": "Folder",
         "$path": "src/ReplicatedStorage"
+      },
+      "Packages": {
+        "$path": "Packages"
       }
     },
     "ServerScriptService": {

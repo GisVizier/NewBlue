@@ -1,142 +1,125 @@
 --!strict
 
+--[[
+    Net — Networking layer backed by BridgeNet2.
+    Preserves the same API surface so all consumers work unchanged.
+
+    Server: Net.listen(name, handler), Net.fireClient(name, player, ...), Net.fireAllClients(name, ...)
+    Client: Net.fire(name, ...), Net.connect(name, handler), Net.invoke(name, ...)
+]]
+
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+local BridgeNet2 = require(ReplicatedStorage:WaitForChild("Packages"):WaitForChild("BridgeNet2"))
+
 local IS_SERVER = RunService:IsServer()
 
-local REMOTES = {
-	Events = {
-		-- Customization
-		"CustomizeEvent",
-		"UpdateColorEvent",
-		"RaceRoll",
-		-- Economy / Realm
-		"RealmRequest",
-		"Purchase",
-		-- UI / Feedback
-		"Notify",
-		"LocalSoundEvent",
-		-- Combat
-		"MeleeHit",
-		"AbilityActivation",
-		"AbilityReplicate",
-		"DamageNumber",
-		-- Character replication
-		"CharacterState",
-		"AnimationStateEvent",
-		"NPCStateEvent",
-		"SoundRequestEvent",
-	},
-	Functions = {
-		"FilterRequest",
-	},
+local BRIDGE_NAMES = {
+	-- Customization
+	"CustomizeEvent",
+	"UpdateColorEvent",
+	"RaceRoll",
+	-- Economy / Realm
+	"RealmRequest",
+	"Purchase",
+	-- UI / Feedback
+	"Notify",
+	"LocalSoundEvent",
+	-- Combat
+	"MeleeHit",
+	"AbilityActivation",
+	"AbilityReplicate",
+	"DamageNumber",
+	-- Character replication
+	"CharacterState",
+	"AnimationStateEvent",
+	"NPCStateEvent",
+	"SoundRequestEvent",
+	-- Misc
+	"FilterRequest",
 }
-
-local RATE_LIMIT_WINDOW = 1
-local RATE_LIMIT_MAX = 10
 
 local Net = {}
 
-local remotesFolder: Folder
+local bridges: { [string]: any } = {}
 
-local rateLimits: { [string]: { [number]: { count: number, resetTime: number } } } = {}
+for _, name in BRIDGE_NAMES do
+	if IS_SERVER then
+		bridges[name] = BridgeNet2.ServerBridge(name)
+	else
+		bridges[name] = BridgeNet2.ClientBridge(name)
+	end
+end
 
-local function getRateLimitKey(player: Player, remoteName: string): boolean
-	local userId = player.UserId
-	if not rateLimits[remoteName] then
-		rateLimits[remoteName] = {}
+local function getBridge(name: string): any
+	local bridge = bridges[name]
+	if not bridge then
+		error("[Net] Bridge not found: " .. name)
 	end
-	local entry = rateLimits[remoteName][userId]
-	local now = tick()
-	if not entry or now >= entry.resetTime then
-		rateLimits[remoteName][userId] = { count = 1, resetTime = now + RATE_LIMIT_WINDOW }
-		return true
-	end
-	entry.count += 1
-	return entry.count <= RATE_LIMIT_MAX
+	return bridge
 end
 
 if IS_SERVER then
-	remotesFolder = Instance.new("Folder")
-	remotesFolder.Name = "GameRemotes"
-	remotesFolder.Parent = ReplicatedStorage
-
-	for _, name in REMOTES.Events do
-		local remote = Instance.new("RemoteEvent")
-		remote.Name = name
-		remote.Parent = remotesFolder
-	end
-
-	for _, name in REMOTES.Functions do
-		local remote = Instance.new("RemoteFunction")
-		remote.Name = name
-		remote.Parent = remotesFolder
-	end
-
 	function Net.listen(remoteName: string, handler: (player: Player, ...any) -> ...any)
-		local remote = remotesFolder:FindFirstChild(remoteName)
-		if not remote then
-			error("[Net] Remote not found: " .. remoteName)
-		end
+		local bridge = getBridge(remoteName)
 
-		if remote:IsA("RemoteEvent") then
-			(remote :: RemoteEvent).OnServerEvent:Connect(function(player: Player, ...)
-				if not getRateLimitKey(player, remoteName) then
-					return
-				end
-				handler(player, ...)
-			end)
-		elseif remote:IsA("RemoteFunction") then
-			(remote :: RemoteFunction).OnServerInvoke = function(player: Player, ...)
-				if not getRateLimitKey(player, remoteName) then
-					return nil
-				end
-				return handler(player, ...)
+		-- Support invoke pattern (client calls InvokeServerAsync, handler returns a value)
+		bridge.OnServerInvoke = function(player: Player, content: any)
+			if type(content) == "table" and content._bn2 then
+				return handler(player, table.unpack(content, 1, content.n))
+			else
+				return handler(player)
 			end
 		end
+
+		-- Support fire pattern (client calls Fire, no return value expected)
+		bridge:Connect(function(player: Player, content: any)
+			if type(content) == "table" and content._bn2 then
+				handler(player, table.unpack(content, 1, content.n))
+			else
+				handler(player)
+			end
+		end)
 	end
 
 	function Net.fireClient(remoteName: string, player: Player, ...: any)
-		local remote = remotesFolder:FindFirstChild(remoteName)
-		if not remote or not remote:IsA("RemoteEvent") then
-			error("[Net] RemoteEvent not found: " .. remoteName)
-		end
-		(remote :: RemoteEvent):FireClient(player, ...)
+		local bridge = getBridge(remoteName)
+		local packed = table.pack(...)
+		packed._bn2 = true
+		bridge:Fire(player, packed)
 	end
 
 	function Net.fireAllClients(remoteName: string, ...: any)
-		local remote = remotesFolder:FindFirstChild(remoteName)
-		if not remote or not remote:IsA("RemoteEvent") then
-			error("[Net] RemoteEvent not found: " .. remoteName)
-		end
-		(remote :: RemoteEvent):FireAllClients(...)
+		local bridge = getBridge(remoteName)
+		local packed = table.pack(...)
+		packed._bn2 = true
+		bridge:Fire(BridgeNet2.AllPlayers(), packed)
 	end
 else
-	remotesFolder = ReplicatedStorage:WaitForChild("GameRemotes") :: Folder
-
 	function Net.fire(remoteName: string, ...: any)
-		local remote = remotesFolder:WaitForChild(remoteName)
-		if not remote:IsA("RemoteEvent") then
-			error("[Net] RemoteEvent not found: " .. remoteName)
-		end
-		(remote :: RemoteEvent):FireServer(...)
+		local bridge = getBridge(remoteName)
+		local packed = table.pack(...)
+		packed._bn2 = true
+		bridge:Fire(packed)
 	end
 
 	function Net.invoke(remoteName: string, ...: any): ...any
-		local remote = remotesFolder:WaitForChild(remoteName)
-		if not remote:IsA("RemoteFunction") then
-			error("[Net] RemoteFunction not found: " .. remoteName)
-		end
-		return (remote :: RemoteFunction):InvokeServer(...)
+		local bridge = getBridge(remoteName)
+		local packed = table.pack(...)
+		packed._bn2 = true
+		return bridge:InvokeServerAsync(packed)
 	end
 
 	function Net.connect(remoteName: string, handler: (...any) -> ())
-		local remote = remotesFolder:WaitForChild(remoteName)
-		if not remote:IsA("RemoteEvent") then
-			error("[Net] RemoteEvent not found: " .. remoteName)
-		end
-		return (remote :: RemoteEvent).OnClientEvent:Connect(handler)
+		local bridge = getBridge(remoteName)
+		return bridge:Connect(function(content: any)
+			if type(content) == "table" and content._bn2 then
+				handler(table.unpack(content, 1, content.n))
+			else
+				handler()
+			end
+		end)
 	end
 end
 
