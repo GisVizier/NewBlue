@@ -1,50 +1,47 @@
-local Player = game.Players.LocalPlayer
+local Players = game:GetService("Players")
+local Lighting = game:GetService("Lighting")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local Player = Players.LocalPlayer
 local Char = Player.Character or Player.CharacterAdded:Wait()
 
-
 local module = {
-
-
-	Engage =function()
-		
+	Engage = function()
 		local CharClone = Char:Clone()
-		CharClone.Parent = game.Workspace
+		CharClone.Parent = workspace
 		local CharClonehum = CharClone:WaitForChild("Humanoid")
-		
+
 		local Scene = script.Mist
-		Scene.Parent = game.Workspace
-		Scene = game.Workspace:WaitForChild("Mist")
-		local CustomizePoint = Scene:WaitForChild("CustomizePoint")
+		Scene.Parent = workspace
+		Scene = workspace:WaitForChild("Mist")
 		local SceneDummy = Scene:WaitForChild("SceneDummy")
-		
-	
-		
+
 		local LeftHand = CharClone:WaitForChild("LeftHand")
 		local Kunai = script["BezierCircle.009"]:Clone()
-		local KunaiMotor = Instance.new('Motor6D')
+		local KunaiMotor = Instance.new("Motor6D")
 		KunaiMotor.Parent = LeftHand
 		KunaiMotor.Part0 = LeftHand
 		KunaiMotor.Part1 = Kunai
 		KunaiMotor.Name = Kunai.Name
 		Kunai.Parent = CharClone
-		
-		
+
 		CharClone.PrimaryPart.Anchored = true
-		CharClone:SetPrimaryPartCFrame(SceneDummy.PrimaryPart.CFrame)
+		CharClone:PivotTo(SceneDummy.PrimaryPart.CFrame)
 		SceneDummy:Destroy()
 		CharClonehum:LoadAnimation(script.SceneAnimation):Play()
-		_G.Cinematic({Parent = CharClone.PrimaryPart})
+
+		local camera = workspace.CurrentCamera
+		camera.CameraType = Enum.CameraType.Scriptable
+		camera.CFrame = CharClone.PrimaryPart.CFrame * CFrame.new(0, 2, 8)
+
 		local Ambience = script.Ambience:Clone()
-		Ambience.Parent = game.Workspace
+		Ambience.Parent = workspace
 		Ambience:Play()
-		local RainUtil = require(game:GetService("ReplicatedStorage"):WaitForChild("ReplicatedModules"):WaitForChild("Utilities"):WaitForChild("RainUtil"))
+
+		local RainUtil = require(ReplicatedStorage:WaitForChild("Assets"):WaitForChild("ReplicatedModules"):WaitForChild("Utilities"):WaitForChild("RainUtil"))
 		RainUtil:Enable()
-		game.Lighting.TimeOfDay = "21:54:00"
-		
+		Lighting.TimeOfDay = "21:54:00"
 	end,
-
-
-
 }
 
 return module

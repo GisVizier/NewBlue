@@ -1,0 +1,32 @@
+--!strict
+
+local Constants = {
+	DATA_STORE_VERSION = "PlayerDataVer1",
+	AUTO_SAVE_PERIOD = 120,
+
+	GROUP_ID = 10950769,
+	REALM_DURATION = 2592000,
+	REALM_DATA_VERSION = 3,
+
+	AUTHORIZED_USER_IDS = {
+		143897090,
+		294150975,
+		220365802,
+		123721150,
+		264053807,
+		398632409,
+		3882191972,
+		247935750,
+		31556003,
+	} :: { number },
+
+	VALID_TESTER_RANKS = {
+		252,
+		254,
+		255,
+	} :: { number },
+
+	TESTING_ACTIVE = false,
+}
+
+return Constants

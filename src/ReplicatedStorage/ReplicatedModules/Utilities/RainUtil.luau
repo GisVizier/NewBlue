@@ -423,7 +423,7 @@ local function connectLoop()
 	local frame = RAIN_UPDATE_PERIOD	-- Frame counter, and force update cycle right now
 	
 	-- Update Emitter on RenderStepped since it needs to be synced to Camera
-	table.insert(connections, RunService.RenderStepped:connect(function()
+	table.insert(connections, RunService.RenderStepped:Connect(function()
 		
 		-- Check if camera is outside or inside
 		local part, position = raycast(Ray.new(workspace.CurrentCamera.CFrame.p, -rainDirection * RAIN_SCANHEIGHT), true)
@@ -482,7 +482,7 @@ local function connectLoop()
 
 	-- Do the other effects on Stepped
 	local signal = RunService:IsRunning() and RunService.Stepped or RunService.RenderStepped
-	table.insert(connections, signal:connect(function()
+	table.insert(connections, signal:Connect(function()
 		
 		frame = frame + 1
 		
@@ -642,7 +642,7 @@ local function disableSound(tweenInfo)
 	-- Tween the rain sound to be mute over a given easing function
 	volumeTarget = 0
 	local tween = TweenService:Create(Sound, tweenInfo, {Volume = 0})
-	tween.Completed:connect(function(state)
+	tween.Completed:Connect(function(state)
 		if state == Enum.PlaybackState.Completed then
 			Sound:Stop()
 		end
@@ -674,7 +674,7 @@ local function makeProperty(valueObjectClass, defaultValue, setter)
 	if defaultValue then
 		valueObject.Value = defaultValue
 	end
-	valueObject.Changed:connect(setter)
+	valueObject.Changed:Connect(setter)
 	setter(valueObject.Value)
 	return valueObject
 end
@@ -717,7 +717,7 @@ local function updateTransparency(value)
 	
 end
 local Transparency = makeProperty("NumberValue", RAIN_DEFAULT_TRANSPARENCY, updateTransparency)
-GlobalModifier.Changed:connect(updateTransparency)
+GlobalModifier.Changed:Connect(updateTransparency)
 
 local SpeedRatio = makeProperty("NumberValue", RAIN_DEFAULT_SPEEDRATIO, function(value)
 	
@@ -825,7 +825,7 @@ function Rain:Disable(tweenInfo)
 	
 	if tweenInfo then
 		local tween = TweenService:Create(GlobalModifier, tweenInfo, {Value = 1})
-		tween.Completed:connect(function(state)
+		tween.Completed:Connect(function(state)
 			if state == Enum.PlaybackState.Completed then
 				-- Only disable the rain completely once the visual effects are faded out
 				disable()

@@ -1,42 +1,40 @@
 {
-  "name": "scripting",
+  "name": "VastBlue",
   "tree": {
     "$className": "DataModel",
     "ReplicatedStorage": {
       "$className": "ReplicatedStorage",
-      "$ignoreUnknownInstances": true,
-      "$path": "src/ReplicatedStorage"
+      "Shared": { "$path": "src/Shared" },
+      "Assets": {
+        "$className": "Folder",
+        "$path": "src/ReplicatedStorage"
+      }
     },
     "ServerScriptService": {
       "$className": "ServerScriptService",
-      "$ignoreUnknownInstances": true,
-      "$path": "src/ServerScriptService"
+      "$path": "src/Server"
     },
     "ServerStorage": {
       "$className": "ServerStorage",
-      "$ignoreUnknownInstances": true,
       "$path": "src/ServerStorage"
     },
     "StarterPlayer": {
       "$className": "StarterPlayer",
-      "StarterCharacterScripts": {
-        "$className": "StarterCharacterScripts",
-        "$ignoreUnknownInstances": true,
-        "$path": "src/StarterPlayer/StarterCharacterScripts"
-      },
-      "StarterPlayerScripts": {
-        "$className": "StarterPlayerScripts",
-        "$ignoreUnknownInstances": true,
-        "$path": "src/StarterPlayer/StarterPlayerScripts"
-      },
       "$properties": {
         "CameraMaxZoomDistance": 128.0,
         "CameraMinZoomDistance": 10.0,
-        "CharacterJumpHeight": 7.20009183883667,
-        "CharacterJumpPower": 50.14500427246094,
+        "CharacterJumpHeight": 7.2,
+        "CharacterJumpPower": 50.145,
         "CharacterUseJumpPower": false
       },
-      "$ignoreUnknownInstances": true
+      "StarterPlayerScripts": {
+        "$className": "StarterPlayerScripts",
+        "$path": "src/Client"
+      },
+      "StarterCharacterScripts": {
+        "$className": "StarterCharacterScripts",
+        "$path": "src/StarterCharacterScripts"
+      }
     }
   }
 }

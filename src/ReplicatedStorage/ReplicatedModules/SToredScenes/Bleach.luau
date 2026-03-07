@@ -1,63 +1,57 @@
-local Player = game.Players.LocalPlayer
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local Lighting = game:GetService("Lighting")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local Player = Players.LocalPlayer
 local Char = Player.Character or Player.CharacterAdded:Wait()
 
-
 local module = {
-
-
-	Engage =function()
-		
+	Engage = function()
 		local CharClone = Char:Clone()
-		CharClone.Parent = game.Workspace
+		CharClone.Parent = workspace
 		local CharClonehum = CharClone:WaitForChild("Humanoid")
-		
+
 		local Scene = script.Scene
-		Scene.Parent = game.Workspace
-		Scene = game.Workspace:WaitForChild("Scene")
-	--	local CustomizePoint = Scene:WaitForChild("CustomizePoint")
+		Scene.Parent = workspace
+		Scene = workspace:WaitForChild("Scene")
 		local SceneDummy = Scene:WaitForChild("SceneDummy")
-		
-		--Char:SetPrimaryPartCFrame(CustomizePoint.CFrame)
-		
-	--[[
-		local Highlight = Instance.new("Highlight")
-		Highlight.OutlineTransparency = 1
-		Highlight.FillTransparency = 0
-		Highlight.FillColor = Color3.new(0, 0, 0)
-		Highlight.Parent = CharClone
-		Highlight.DepthMode = Enum.HighlightDepthMode.Occluded
-		--]]
-		
+
 		local Music = script.Music:Clone()
-		Music.Parent = game.Workspace
+		Music.Parent = workspace
 		Music.Volume = 0
 		Music:Play()
-		_G.PlayTween(Music,{Time = 1,EasingStyle = "Sine",Goal = {Volume = 10}})
-		
-		game.Lighting.Atmosphere:Destroy()
-		local NewAtmoshpere = script.Atmosphere:Clone()
-		NewAtmoshpere.Parent = game.Lighting
+		TweenService:Create(Music, TweenInfo.new(1, Enum.EasingStyle.Sine), { Volume = 10 }):Play()
+
+		local oldAtmo = Lighting:FindFirstChildOfClass("Atmosphere")
+		if oldAtmo then
+			oldAtmo:Destroy()
+		end
+		local NewAtmosphere = script.Atmosphere:Clone()
+		NewAtmosphere.Parent = Lighting
 		local Clouds = script.Clouds:Clone()
-		Clouds.Parent = game.Workspace.Terrain
-		game.Lighting.TimeOfDay = "04:24:00"
-		game.Lighting.Sky.MoonAngularSize = 60
+		Clouds.Parent = workspace.Terrain
+		Lighting.TimeOfDay = "04:24:00"
+		Lighting.Sky.MoonAngularSize = 60
+
 		CharClone.PrimaryPart.Anchored = true
-		CharClone:SetPrimaryPartCFrame(SceneDummy.PrimaryPart.CFrame)
+		CharClone:PivotTo(SceneDummy.PrimaryPart.CFrame)
 		SceneDummy:Destroy()
 		local Anim = CharClonehum:LoadAnimation(script.SceneAnimation)
 		Anim:Play()
 		Anim:AdjustSpeed(0.3)
-		_G.Cinematic({Parent = CharClone.PrimaryPart})
+
+		local camera = workspace.CurrentCamera
+		camera.CameraType = Enum.CameraType.Scriptable
+		camera.CFrame = CharClone.PrimaryPart.CFrame * CFrame.new(0, 2, 8)
+
 		local Ambience = script.Ambience:Clone()
-		Ambience.Parent = game.Workspace
+		Ambience.Parent = workspace
 		Ambience:Play()
-		local RainUtil = require(game:GetService("ReplicatedStorage"):WaitForChild("ReplicatedModules"):WaitForChild("Utilities"):WaitForChild("RainUtil"))
+
+		local RainUtil = require(ReplicatedStorage:WaitForChild("Assets"):WaitForChild("ReplicatedModules"):WaitForChild("Utilities"):WaitForChild("RainUtil"))
 		RainUtil:Enable()
-		
 	end,
-
-
-
 }
 
 return module
