@@ -1,8 +1,12 @@
-# Project place file
-/VastBlue.rbxlx
-
-# Roblox Studio lock files
-/*.rbxlx.lock
-/*.rbxl.lock
-
+# Rojo
 sourcemap.json
+*.rbxl
+*.rbxlx
+*.rbxl.lock
+*.rbxlx.lock
+
+# Wally
+Packages/
+
+# macOS
+.DS_Store

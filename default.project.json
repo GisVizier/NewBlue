@@ -1,42 +1,47 @@
 {
-  "name": "VastBlue",
+  "name": "Vast Blue",
   "tree": {
     "$className": "DataModel",
+    "HttpService": {
+      "$properties": {
+        "HttpEnabled": true
+      }
+    },
+    "Players": {
+      "$properties": {
+        "CharacterAutoLoads": false
+      }
+    },
+    "ReplicatedFirst": {
+      "$ignoreUnknownInstances": true,
+      "$path": "src/replicated-first"
+    },
     "ReplicatedStorage": {
-      "$className": "ReplicatedStorage",
-      "Shared": { "$path": "src/Shared" },
-      "Assets": {
-        "$className": "Folder",
-        "$path": "src/ReplicatedStorage"
-      },
       "Packages": {
         "$path": "Packages"
+      },
+      "Shared": {
+        "$path": "src/shared"
       }
     },
     "ServerScriptService": {
-      "$className": "ServerScriptService",
-      "$path": "src/Server"
-    },
-    "ServerStorage": {
-      "$className": "ServerStorage",
-      "$path": "src/ServerStorage"
+      "Server": {
+        "$path": "src/server"
+      }
     },
     "StarterPlayer": {
-      "$className": "StarterPlayer",
-      "$properties": {
-        "CameraMaxZoomDistance": 128.0,
-        "CameraMinZoomDistance": 10.0,
-        "CharacterJumpHeight": 7.2,
-        "CharacterJumpPower": 50.145,
-        "CharacterUseJumpPower": false
+      "StarterCharacterScripts": {
+        "Animate": {
+          "$path": "src/destroy-default-animate.client.luau"
+        },
+        "Health": {
+          "$path": "src/destroy-default-health.server.luau"
+        }
       },
       "StarterPlayerScripts": {
-        "$className": "StarterPlayerScripts",
-        "$path": "src/Client"
-      },
-      "StarterCharacterScripts": {
-        "$className": "StarterCharacterScripts",
-        "$path": "src/StarterCharacterScripts"
+        "Client": {
+          "$path": "src/client"
+        }
       }
     }
   }

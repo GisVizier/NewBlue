@@ -3,6 +3,36 @@
 registry = "test"
 
 [[package]]
+name = "1foreverhd/topbarplus"
+version = "3.4.0"
+dependencies = []
+
+[[package]]
+name = "arakodev/rbxcamerashaker"
+version = "0.1.1"
+dependencies = []
+
+[[package]]
+name = "boatbomber/boattween"
+version = "1.0.1"
+dependencies = []
+
+[[package]]
+name = "duckarmor/freeze"
+version = "0.1.4"
+dependencies = [["TestEZ", "roblox/testez@0.4.1"]]
+
+[[package]]
+name = "elttob/fusion"
+version = "0.3.0"
+dependencies = []
+
+[[package]]
+name = "evaera/cmdr"
+version = "1.12.0"
+dependencies = []
+
+[[package]]
 name = "ffrostflame/bridgenet2"
 version = "1.0.0"
 dependencies = [["RemotePacketSizeCounter", "pysephwasntavailable/remotepacketsizecounter@2.4.1"], ["TableKit", "ffrostflame/tablekit@0.2.4"], ["wallyInstanceManager", "ffrostflame/wally-instance-manager@0.1.0"]]
@@ -18,11 +48,46 @@ version = "0.1.0"
 dependencies = []
 
 [[package]]
-name = "isaacalazar/vastblue"
-version = "0.1.0"
-dependencies = [["BridgeNet2", "ffrostflame/bridgenet2@1.0.0"]]
+name = "osyrisrblx/t"
+version = "3.1.1"
+dependencies = []
+
+[[package]]
+name = "pepeeltoro41/ui-labs"
+version = "2.4.2"
+dependencies = []
 
 [[package]]
 name = "pysephwasntavailable/remotepacketsizecounter"
 version = "2.4.1"
 dependencies = []
+
+[[package]]
+name = "roblox/testez"
+version = "0.4.1"
+dependencies = []
+
+[[package]]
+name = "sinovex/vast-blue-maybe"
+version = "0.1.0"
+dependencies = [["BoatTween", "boatbomber/boattween@1.0.1"], ["BridgeNet2", "ffrostflame/bridgenet2@1.0.0"], ["CameraShaker", "arakodev/rbxcamerashaker@0.1.1"], ["Cmdr", "evaera/cmdr@1.12.0"], ["Fusion", "elttob/fusion@0.3.0"], ["Observers", "sleitnick/observers@0.4.0"], ["Replion", "ytrev/replion@2.0.1"], ["Signal", "sleitnick/signal@2.0.3"], ["TopbarPlus", "1foreverhd/topbarplus@3.4.0"], ["Trove", "sleitnick/trove@1.8.0"], ["UiLabs", "pepeeltoro41/ui-labs@2.4.2"], ["t", "osyrisrblx/t@3.1.1"]]
+
+[[package]]
+name = "sleitnick/observers"
+version = "0.4.0"
+dependencies = []
+
+[[package]]
+name = "sleitnick/signal"
+version = "2.0.3"
+dependencies = []
+
+[[package]]
+name = "sleitnick/trove"
+version = "1.8.0"
+dependencies = []
+
+[[package]]
+name = "ytrev/replion"
+version = "2.0.1"
+dependencies = [["Freeze", "duckarmor/freeze@0.1.4"], ["Signal", "sleitnick/signal@2.0.3"]]
