@@ -4,7 +4,6 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local BridgeNet2 = require(ReplicatedStorage.Packages.BridgeNet2)
-local ProfileUtil = require(ReplicatedStorage.Shared.Utility.ProfileUtil)
 local Profiles = require(script.Profiles)
 local Util = require(ReplicatedStorage.Shared.Utility.Util)
 
@@ -25,7 +24,7 @@ local function configPlayerSettings(player: Player)
 	player.CameraMaxZoomDistance = CAMERA_MAX_ZOOM
 	player.CameraMinZoomDistance = CAMERA_MIN_ZOOM
 	player.CameraMode = Enum.CameraMode.Classic
-	player.DevCameraOcclusionMode = Enum.DevCameraOcclusionMode.Zoom
+	player.DevCameraOcclusionMode = Enum.DevCameraOcclusionMode.Invisicam
 	player.DevComputerCameraMode = Enum.DevComputerCameraMovementMode.Classic
 	player.DevEnableMouseLock = false
 	player.DevTouchCameraMode = Enum.DevTouchCameraMovementMode.Classic
@@ -37,11 +36,6 @@ local function onPlayerAdded(player: Player)
 	Profiles.add(player)
 	configPlayerSettings(player)
 
-	local profile = ProfileUtil.waitForServer(player)
-	if not profile then
-		return
-	end
-
 	local function onCharacterAdded(char: Model)
 		local hum = Util.waitForHum(char)
 		if not hum then
@@ -50,7 +44,7 @@ local function onPlayerAdded(player: Player)
 
 		local function onDied()
 			task.delay(Players.RespawnTime, function()
-				if player.Parent == Players then
+				if player.Parent == Players and not player:GetAttribute("IsCustomising") then
 					player:LoadCharacterAsync()
 				end
 			end)
